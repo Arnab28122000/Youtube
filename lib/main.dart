@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-import 'package:youtube/categories_model.dart';
-
-import 'package:youtube/splash_screen.dart';
+import 'CategoriesModel.dart';
+import 'splashscreen.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -23,10 +21,11 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider.value(value: CategoriesList()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             fontFamily: "CM",
             backgroundColor: Color.fromRGBO(89, 89, 89, 0),
-            primaryColor: Colors.green,
+            primaryColor: Colors.red,
             accentColor: Colors.greenAccent,
             bottomAppBarColor: Colors.green,
             bottomAppBarTheme: BottomAppBarTheme(color: Colors.green)),

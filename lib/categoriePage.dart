@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube/category_item.dart';
-import 'categories_model.dart';
+import 'CategoriesModel.dart';
+import 'CategoryItem.dart';
 
-class TrendingPage extends StatefulWidget {
+class CategoriesPage extends StatefulWidget {
   @override
-  _TrendingPageState createState() => _TrendingPageState();
+  _CategoriesPageState createState() => _CategoriesPageState();
 }
 
-class _TrendingPageState extends State<TrendingPage> {
+class _CategoriesPageState extends State<CategoriesPage> {
   var _isInit = true;
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await Provider.of<CategoriesList>(context).getTrendingVideos();
+      await Provider.of<CategoriesList>(context).getTrendingVideos(context);
     }
 
     _isInit = false;
@@ -29,14 +29,21 @@ class _TrendingPageState extends State<TrendingPage> {
             ? Center(child: CircularProgressIndicator())
             : NotificationListener<ScrollNotification>(
                 onNotification: (ScrollNotification scrollDetails) {
-                  if (!data.isLoading &&
-                      scrollDetails.metrics.pixels ==
-                          scrollDetails.metrics.maxScrollExtent) {
-                    Provider.of<CategoriesList>(context).getNewTrendingVideos();
+                  if (!data.isLoadingNext &&
+                      scrollDetails.metrics.pixels >=
+                          scrollDetails.metrics.maxScrollExtent / 2) {
+                    if (data.isSearch == false)
+                      Provider.of<CategoriesList>(context)
+                          .getNewTrendingVideos(context);
+                    else
+                      Provider.of<CategoriesList>(context)
+                          .getNewVideos(context);
                   }
                   return false;
                 },
                 child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
                     padding: EdgeInsets.only(bottom: 10, top: 10),
                     itemCount: data.items.length,
                     itemBuilder: (ctx, i) => CategoryItem(data, i)),
