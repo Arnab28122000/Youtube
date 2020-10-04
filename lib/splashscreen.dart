@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'AuthScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:youtube/Login_page.dart';
-import 'package:youtube/home_page.dart';
 import 'dart:async';
+import 'HomePage.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  var _isnit = true;
+/*   var _isnit = true;
   var isLoading = false;
   var _isLogin = false;
   var prefs;
@@ -55,6 +55,25 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     _isnit = false;
     super.didChangeDependencies();
+  } */
+  void _goto() {
+    Widget _screen = StreamBuilder(
+        stream: FirebaseAuth.instance.onAuthStateChanged,
+        builder: (ctx, userSnapshot) {
+          if (userSnapshot.hasData) {
+            return HomePage();
+          } else {
+            return AuthScreen();
+          }
+        });
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (ctx) => _screen));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 4), _goto);
   }
 
   @override

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:youtube/category_item.dart';
-import 'categories_model.dart';
+import 'CategoriesModel.dart';
+import 'CategoryItem.dart';
 
-class CategoriesPage extends StatefulWidget {
+class TrendingPage extends StatefulWidget {
   @override
-  _CategoriesPageState createState() => _CategoriesPageState();
+  _TrendingPageState createState() => _TrendingPageState();
 }
 
-class _CategoriesPageState extends State<CategoriesPage> {
+class _TrendingPageState extends State<TrendingPage> {
   var _isInit = true;
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await Provider.of<CategoriesList>(context).getTrendingVideos();
+      await Provider.of<CategoriesList>(context).getTrendingVideos(context);
     }
 
     _isInit = false;
@@ -29,14 +29,11 @@ class _CategoriesPageState extends State<CategoriesPage> {
             ? Center(child: CircularProgressIndicator())
             : NotificationListener<ScrollNotification>(
                 onNotification: (ScrollNotification scrollDetails) {
-                  if (!data.isLoading &&
-                      scrollDetails.metrics.pixels ==
-                          scrollDetails.metrics.maxScrollExtent) {
-                    if (data.isSearch == false)
-                      Provider.of<CategoriesList>(context)
-                          .getNewTrendingVideos();
-                    else
-                      Provider.of<CategoriesList>(context).getNewVideos();
+                  if (!data.isLoadingNext &&
+                      scrollDetails.metrics.pixels >=
+                          scrollDetails.metrics.maxScrollExtent / 2) {
+                    Provider.of<CategoriesList>(context)
+                        .getNewTrendingVideos(context);
                   }
                   return false;
                 },
